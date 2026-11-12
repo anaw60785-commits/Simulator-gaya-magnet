@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laboratorium Virtual Fisika - Gaya Magnet pada Dua Kawat Lurus</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body{font-family:Inter,system-ui,sans-serif}
+  input[type=range]{accent-color:#1e3a8a}
+  .card{background:white;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 1px 3px #0f172a0a}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  button:focus-visible,input:focus-visible{outline:3px solid #7dd3fc;outline-offset:2px}
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+<header class="bg-gradient-to-r from-blue-950 via-blue-900 to-cyan-800 text-white shadow-md">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+    <div>
+      <div class="inline-flex bg-white/15 rounded-full px-3 py-1 text-xs font-semibold tracking-wide mb-2">⚡ LABORATORIUM VIRTUAL FISIKA SMA</div>
+      <h1 class="text-xl sm:text-2xl font-extrabold">Simulator Gaya Magnet pada Dua Kawat Lurus Sejajar</h1>
+      <p class="text-sm text-cyan-100 mt-1">Eksplorasi pengaruh arus listrik dan jarak antarkawat terhadap medan magnet serta gaya per satuan panjang.</p>
+    </div>
+    <button id="reset" class="bg-white text-blue-950 rounded-lg px-4 py-2 text-sm font-bold hover:bg-cyan-50">↺ Reset</button>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+  <section class="card p-4">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <div><h2 class="font-bold text-sm uppercase tracking-wide text-slate-600">Skenario cepat</h2>
+      <p class="text-xs text-slate-500 mt-1">Pilih kondisi arus untuk membandingkan tarik-menarik dan tolak-menolak.</p></div>
+      <div class="flex flex-wrap gap-2">
+        <button class="preset rounded-lg border border-cyan-200 bg-cyan-50 text-cyan-900 px-3 py-2 text-xs font-bold" data-i1="5" data-i2="5" data-d="0.1">Arus searah</button>
+        <button class="preset rounded-lg border border-rose-200 bg-rose-50 text-rose-900 px-3 py-2 text-xs font-bold" data-i1="5" data-i2="-5" data-d="0.1">Arus berlawanan</button>
+        <button class="preset rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-900 px-3 py-2 text-xs font-bold" data-i1="8" data-i2="4" data-d="0.2">Jarak diperbesar</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <aside class="lg:col-span-4 space-y-4">
+      <section class="card p-5 space-y-5">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <h2 class="font-bold">🎛️ Parameter eksperimen</h2>
+          <span class="text-xs text-slate-500">μ₀ = 4π × 10⁻⁷</span>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm font-semibold"><label for="i1">Arus kawat 1 (I₁)</label><output id="oI1" class="mono text-blue-900">5,0 A</output></div>
+          <input id="i1" type="range" min="-10" max="10" step="0.5" value="5" class="w-full mt-2">
+          <div class="flex justify-between text-xs text-slate-400"><span>−10 A</span><span>0</span><span>+10 A</span></div>
+          <p class="text-xs text-slate-500 mt-1">Tanda (+) ke atas, tanda (−) ke bawah.</p>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm font-semibold"><label for="i2">Arus kawat 2 (I₂)</label><output id="oI2" class="mono text-blue-900">5,0 A</output></div>
+          <input id="i2" type="range" min="-10" max="10" step="0.5" value="5" class="w-full mt-2">
+          <div class="flex justify-between text-xs text-slate-400"><span>−10 A</span><span>0</span><span>+10 A</span></div>
+          <p class="text-xs text-slate-500 mt-1">Tanda (+) ke atas, tanda (−) ke bawah.</p>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm font-semibold"><label for="d">Jarak antarkawat (d)</label><output id="od" class="mono text-blue-900">0,10 m</output></div>
+          <input id="d" type="range" min="0.05" max="0.50" step="0.01" value="0.10" class="w-full mt-2">
+          <div class="flex justify-between text-xs text-slate-400"><span>0,05 m</span><span>0,50 m</span></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm font-semibold"><label for="length">Panjang kawat yang ditinjau (L)</label><output id="oL" class="mono text-blue-900">1,0 m</output></div>
+          <input id="length" type="range" min="0.5" max="5" step="0.5" value="1" class="w-full mt-2">
+        </div>
+        <div class="border-t border-slate-100 pt-4">
+          <label class="flex items-center gap-2 text-xs text-slate-600"><input id="showB" type="checkbox" checked> Tampilkan arah medan magnet di sekitar kawat</label>
+          <label class="flex items-center gap-2 text-xs text-slate-600 mt-2"><input id="showGraph" type="checkbox" checked> Tampilkan grafik gaya per panjang terhadap jarak</label>
+          <button id="record" class="mt-4 w-full rounded-lg bg-blue-950 hover:bg-blue-900 text-white font-bold text-sm py-2.5">＋ Catat hasil pengamatan</button>
+        </div>
+      </section>
+      <section class="card p-5 space-y-3">
+        <h3 class="font-bold text-sm">📐 Persamaan yang digunakan</h3>
+        <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 mono text-xs space-y-2">
+          <p class="text-slate-500">Medan magnet oleh kawat 1 pada posisi kawat 2</p>
+          <p>B₁ = μ₀ |I₁| / (2πd)</p>
+          <hr>
+          <p class="text-slate-500">Gaya magnet per satuan panjang</p>
+          <p>F/L = μ₀ |I₁ I₂| / (2πd)</p>
+          <hr>
+          <p class="text-slate-500">Gaya pada panjang kawat L</p>
+          <p>F = (F/L) × L</p>
+        </div>
+        <div id="substitution" class="bg-blue-50 border border-blue-100 rounded-lg p-3 mono text-xs leading-relaxed"></div>
+        <p class="text-xs text-slate-500 leading-relaxed">Model menganggap kedua kawat lurus, panjang, sejajar, dan berada di ruang hampa/udara (μ ≈ μ₀).</p>
+      </section>
+    </aside>
+
+    <section class="lg:col-span-8 space-y-4">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="card p-4"><p class="text-xs text-slate-500">Medan magnet B₁ di kawat 2</p><p id="mB" class="text-2xl font-extrabold text-blue-950 mt-1">10,00 µT</p><p class="text-xs text-slate-400">Akibat arus pada kawat 1</p></div>
+        <div class="card p-4"><p class="text-xs text-slate-500">Gaya per satuan panjang</p><p id="mFL" class="text-2xl font-extrabold text-blue-950 mt-1">50,00 µN/m</p><p class="text-xs text-slate-400">|F|/L</p></div>
+        <div class="card p-4"><p class="text-xs text-slate-500">Gaya pada panjang L</p><p id="mF" class="text-2xl font-extrabold text-blue-950 mt-1">50,00 µN</p><p id="mType" class="text-xs font-bold text-cyan-700 mt-1">Tarik-menarik</p></div>
+      </div>
+
+      <section class="card p-4 sm:p-5">
+        <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+          <div><h2 class="font-bold text-sm">A. Visualisasi dua kawat sejajar</h2><p class="text-xs text-slate-500 mt-1">Tampilan penampang kawat: • arus keluar bidang, × arus masuk bidang; panah ungu menunjukkan arah medan magnet di lokasi kawat lainnya.</p></div>
+          <span id="interactionBadge" class="text-xs font-bold rounded-full bg-cyan-100 text-cyan-800 px-3 py-1">Tarik-menarik</span>
+        </div>
+        <div class="rounded-lg border border-slate-200 bg-slate-50 overflow-hidden">
+          <svg id="diagram" viewBox="0 0 760 310" class="w-full block" role="img" aria-label="Diagram penampang dua kawat sejajar dan arah gaya magnet"></svg>
+        </div>
+        <div class="flex flex-wrap gap-4 text-xs text-slate-500 mt-3">
+          <span><b class="text-blue-700">●</b> Arus keluar bidang</span><span><b class="text-rose-700">×</b> Arus masuk bidang</span>
+          <span><b class="text-cyan-700">← →</b> Arah gaya magnet</span>
+        </div>
+        <p id="directionNote" class="text-xs text-slate-600 mt-2"></p>
+      </section>
+
+      <section id="graphCard" class="card p-4 sm:p-5">
+        <h2 class="font-bold text-sm">B. Grafik hubungan F/L terhadap jarak</h2>
+        <p class="text-xs text-slate-500 mt-1 mb-3">Untuk besar arus saat ini, gaya per satuan panjang berbanding terbalik dengan jarak antarkawat.</p>
+        <div class="rounded-lg border border-slate-200 bg-slate-50 overflow-hidden">
+          <svg id="graph" viewBox="0 0 760 300" class="w-full block" role="img" aria-label="Grafik gaya magnet per satuan panjang terhadap jarak"></svg>
+        </div>
+      </section>
+    </section>
+  </div>
+
+  <section class="card p-5">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-3">
+      <div><h2 class="font-bold text-sm">📋 Tabel log pengamatan</h2><p class="text-xs text-slate-500 mt-1">Atur parameter, lalu catat hasil untuk membandingkan beberapa percobaan.</p></div>
+      <button id="clear" class="text-xs font-bold text-slate-600 bg-slate-100 hover:bg-rose-50 hover:text-rose-700 rounded-lg px-3 py-2">Bersihkan tabel</button>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-xs text-left border-collapse min-w-[650px]">
+        <thead class="bg-slate-50 text-blue-950"><tr class="border-b-2 border-blue-900">
+          <th class="p-3">Uji</th><th class="p-3">I₁ (A)</th><th class="p-3">I₂ (A)</th><th class="p-3">d (m)</th><th class="p-3">F/L (µN/m)</th><th class="p-3">Interaksi</th>
+        </tr></thead>
+        <tbody id="logs" class="divide-y divide-slate-100"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card p-5">
+    <h2 class="font-bold text-sm mb-3">📘 Materi singkat: gaya magnet pada dua kawat lurus sejajar</h2>
+    <div class="grid md:grid-cols-2 gap-4 text-sm leading-relaxed">
+      <div><h3 class="font-bold text-blue-900 mb-1">Arus searah</h3><p class="text-slate-600">Jika kedua arus mengalir dalam arah yang sama, kedua kawat saling tarik-menarik.</p></div>
+      <div><h3 class="font-bold text-rose-800 mb-1">Arus berlawanan arah</h3><p class="text-slate-600">Jika kedua arus mengalir dalam arah berlawanan, kedua kawat saling tolak-menolak.</p></div>
+      <div class="md:col-span-2 bg-slate-50 rounded-lg p-3"><b>Kesimpulan hubungan variabel:</b><ul class="list-disc ml-5 mt-1 text-slate-600"><li>Semakin besar |I₁| dan |I₂|, semakin besar gaya magnet.</li><li>Semakin besar jarak d, semakin kecil gaya magnet.</li><li>Gaya pada kedua kawat sama besar dan berlawanan arah.</li></ul></div>
+    </div>
+  </section>
+  <footer class="text-center text-xs text-slate-400 pb-5">Laboratorium Virtual Fisika SMA • Gaya Magnet pada Dua Kawat Lurus Sejajar</footer>
+</main>
+
+<script>
+(() => {
+  const MU0 = 4 * Math.PI * 1e-7;
+  const $ = id => document.getElementById(id);
+  const controls = ['i1','i2','d','length'];
+  let logs = [];
+
+  const fmt = (n, digits=2) => n.toLocaleString('id-ID',{minimumFractionDigits:digits,maximumFractionDigits:digits});
+  const signed = n => (n > 0 ? '+' : '') + fmt(n,1);
+  const currentState = () => {
+    const I1 = +$('i1').value, I2 = +$('i2').value, d = +$('d').value, L = +$('length').value;
+    const B = MU0 * Math.abs(I1) / (2 * Math.PI * d);
+    const FL = MU0 * Math.abs(I1 * I2) / (2 * Math.PI * d);
+    const F = FL * L;
+    const active = I1 !== 0 && I2 !== 0;
+    const type = !active ? 'Tidak ada gaya (arus nol)' : (I1 * I2 > 0 ? 'Tarik-menarik' : 'Tolak-menolak');
+    return {I1,I2,d,L,B,FL,F,type,active};
+  };
+
+  function drawDiagram(s) {
+    const svg = $('diagram');
+    const cx1 = 250, cx2 = 510, cy = 145, r = 34;
+    const same = s.I1 * s.I2 > 0;
+    const forceColor = same ? '#0891b2' : '#e11d48';
+    const currentMark = (I) => I > 0 ? '•' : I < 0 ? '×' : '0';
+    let field = '';
+    if ($('showB').checked) {
+      // Schematic field-direction marks at the other wire, using the right-hand rule.
+      const bAt2 = s.I1 > 0 ? '↑' : s.I1 < 0 ? '↓' : '—';
+      const bAt1 = s.I2 > 0 ? '↓' : s.I2 < 0 ? '↑' : '—';
+      field = `
+        <text x="${cx2}" y="78" text-anchor="middle" font-size="22" font-weight="800" fill="#7c3aed">${bAt2}</text>
+        <text x="${cx2}" y="95" text-anchor="middle" font-size="10" fill="#64748b">B₁ di kawat 2</text>
+        <text x="${cx1}" y="78" text-anchor="middle" font-size="22" font-weight="800" fill="#7c3aed">${bAt1}</text>
+        <text x="${cx1}" y="95" text-anchor="middle" font-size="10" fill="#64748b">B₂ di kawat 1</text>`;
+    }
+    let arrows = '';
+    if (s.active) {
+      const leftDir = same ? 1 : -1;
+      const rightDir = -leftDir;
+      arrows = `
+        <defs><marker id="arrCyan" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="${forceColor}"/></marker></defs>
+        <line x1="${cx1 + leftDir*48}" y1="${cy}" x2="${cx1 + leftDir*112}" y2="${cy}" stroke="${forceColor}" stroke-width="5" marker-end="url(#arrCyan)"/>
+        <line x1="${cx2 + rightDir*48}" y1="${cy}" x2="${cx2 + rightDir*112}" y2="${cy}" stroke="${forceColor}" stroke-width="5" marker-end="url(#arrCyan)"/>
+        <text x="${cx1}" y="215" text-anchor="middle" fill="${forceColor}" font-size="13" font-weight="700">F₁</text>
+        <text x="${cx2}" y="215" text-anchor="middle" fill="${forceColor}" font-size="13" font-weight="700">F₂</text>`;
+    }
+    svg.innerHTML = `
+      <defs><pattern id="gridDots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#cbd5e1"/></pattern></defs>
+      <rect width="760" height="310" fill="url(#gridDots)"/>
+      <line x1="${cx1}" y1="28" x2="${cx1}" y2="270" stroke="#94a3b8" stroke-dasharray="4 5"/>
+      <line x1="${cx2}" y1="28" x2="${cx2}" y2="270" stroke="#94a3b8" stroke-dasharray="4 5"/>
+      <line x1="${cx1}" y1="42" x2="${cx2}" y2="42" stroke="#475569" stroke-width="1.5"/>
+      <line x1="${cx1}" y1="35" x2="${cx1}" y2="49" stroke="#475569" stroke-width="1.5"/>
+      <line x1="${cx2}" y1="35" x2="${cx2}" y2="49" stroke="#475569" stroke-width="1.5"/>
+      <rect x="350" y="29" width="60" height="25" rx="5" fill="#f8fafc"/>
+      <text x="380" y="46" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">d = ${fmt(s.d,2)} m</text>
+      ${field}
+      <circle cx="${cx1}" cy="${cy}" r="${r}" fill="#dbeafe" stroke="#1d4ed8" stroke-width="4"/>
+      <circle cx="${cx2}" cy="${cy}" r="${r}" fill="#ffe4e6" stroke="#e11d48" stroke-width="4"/>
+      <text x="${cx1}" y="${cy+9}" text-anchor="middle" font-size="32" font-weight="800" fill="#1d4ed8">${currentMark(s.I1)}</text>
+      <text x="${cx2}" y="${cy+9}" text-anchor="middle" font-size="32" font-weight="800" fill="#be123c">${currentMark(s.I2)}</text>
+      <text x="${cx1}" y="198" text-anchor="middle" font-size="13" font-weight="700" fill="#1e3a8a">Kawat 1</text>
+      <text x="${cx2}" y="198" text-anchor="middle" font-size="13" font-weight="700" fill="#9f1239">Kawat 2</text>
+      <text x="${cx1}" y="235" text-anchor="middle" font-size="12" fill="#334155">I₁ = ${signed(s.I1)} A</text>
+      <text x="${cx2}" y="235" text-anchor="middle" font-size="12" fill="#334155">I₂ = ${signed(s.I2)} A</text>
+      ${arrows}
+      <text x="380" y="285" text-anchor="middle" font-size="11" fill="#64748b">Penampang kawat (dilihat sepanjang arah kawat)</text>`;
+  }
+
+  function drawGraph(s) {
+    const svg = $('graph');
+    const W=760,H=300, left=75,right=30,top=25,bottom=48;
+    const pw=W-left-right, ph=H-top-bottom;
+    const dMin=.05,dMax=.50;
+    const f = d => MU0*Math.abs(s.I1*s.I2)/(2*Math.PI*d)*1e6;
+    const max = Math.max(1, f(dMin)*1.08);
+    const x = d => left+(d-dMin)/(dMax-dMin)*pw;
+    const y = v => top+ph-(v/max)*ph;
+    let out='';
+    for(let k=0;k<=4;k++){
+      const val=max*k/4, yy=y(val);
+      out += `<line x1="${left}" y1="${yy}" x2="${W-right}" y2="${yy}" stroke="#e2e8f0"/><text x="${left-9}" y="${yy+4}" text-anchor="end" font-size="11" fill="#64748b">${fmt(val,1)}</text>`;
+    }
+    for(let k=0;k<=5;k++){
+      const d=dMin+k*.09, xx=x(d);
+      out += `<line x1="${xx}" y1="${top}" x2="${xx}" y2="${top+ph}" stroke="#e2e8f0" stroke-dasharray="3 3"/><text x="${xx}" y="${top+ph+19}" text-anchor="middle" font-size="11" fill="#64748b">${fmt(d,2)}</text>`;
+    }
+    const pts=[];
+    for(let i=0;i<=120;i++){const d=dMin+i/120*(dMax-dMin);pts.push(`${x(d).toFixed(1)},${y(f(d)).toFixed(1)}`);}
+    const activeX=x(s.d),activeY=y(f(s.d));
+    out += `<polyline points="${pts.join(' ')}" fill="none" stroke="#1e3a8a" stroke-width="3"/>`;
+    out += `<line x1="${left}" y1="${top+ph}" x2="${W-right}" y2="${top+ph}" stroke="#64748b"/><line x1="${left}" y1="${top}" x2="${left}" y2="${top+ph}" stroke="#64748b"/>`;
+    out += `<line x1="${activeX}" y1="${top+ph}" x2="${activeX}" y2="${activeY}" stroke="#e11d48" stroke-dasharray="4 3"/><circle cx="${activeX}" cy="${activeY}" r="6" fill="#e11d48" stroke="white" stroke-width="2"/>`;
+    out += `<text x="${W/2}" y="${H-7}" text-anchor="middle" font-size="12" font-weight="600" fill="#334155">Jarak antarkawat d (m)</text><text x="17" y="${H/2}" text-anchor="middle" transform="rotate(-90 17 ${H/2})" font-size="12" font-weight="600" fill="#334155">F/L (µN/m)</text>`;
+    out += `<text x="${Math.min(activeX+10,W-190)}" y="${Math.max(activeY-10,18)}" font-size="11" font-weight="700" fill="#be123c">d=${fmt(s.d,2)} m; ${fmt(f(s.d),2)} µN/m</text>`;
+    svg.innerHTML=out;
+  }
+
+  function update(){
+    const s=currentState();
+    $('oI1').textContent=signed(s.I1)+' A'; $('oI2').textContent=signed(s.I2)+' A';
+    $('od').textContent=fmt(s.d,2)+' m'; $('oL').textContent=fmt(s.L,1)+' m';
+    $('mB').textContent=fmt(s.B*1e6,2)+' µT';
+    $('mFL').textContent=fmt(s.FL*1e6,2)+' µN/m';
+    $('mF').textContent=fmt(s.F*1e6,2)+' µN';
+    $('mType').textContent=s.type;
+    $('mType').className='text-xs font-bold mt-1 '+(s.type==='Tarik-menarik'?'text-cyan-700':s.type==='Tolak-menolak'?'text-rose-700':'text-slate-500');
+    $('interactionBadge').textContent=s.type;
+    $('interactionBadge').className='text-xs font-bold rounded-full px-3 py-1 '+(s.type==='Tarik-menarik'?'bg-cyan-100 text-cyan-800':s.type==='Tolak-menolak'?'bg-rose-100 text-rose-800':'bg-slate-100 text-slate-600');
+    $('substitution').innerHTML=`B₁ = (4π×10⁻⁷ × ${fmt(Math.abs(s.I1),1)}) / (2π × ${fmt(s.d,2)})<br><b>B₁ = ${fmt(s.B*1e6,2)} µT</b><br><br>F/L = (2×10⁻⁷ × ${fmt(Math.abs(s.I1),1)} × ${fmt(Math.abs(s.I2),1)}) / ${fmt(s.d,2)}<br><b>F/L = ${fmt(s.FL*1e6,2)} µN/m</b><br>F = ${fmt(s.FL*1e6,2)} × ${fmt(s.L,1)}<br><b>F = ${fmt(s.F*1e6,2)} µN</b>`;
+    $('directionNote').textContent = s.active
+      ? (s.type==='Tarik-menarik' ? 'Kedua arus searah. Gaya pada masing-masing kawat mengarah menuju kawat lainnya.' : 'Kedua arus berlawanan arah. Gaya pada masing-masing kawat menjauhi kawat lainnya.')
+      : 'Jika salah satu arus bernilai nol, tidak ada gaya magnet antarkawat pada model ini.';
+    drawDiagram(s);
+    drawGraph(s);
+    $('graphCard').classList.toggle('hidden',!$('showGraph').checked);
+  }
+
+  controls.forEach(id=>$(id).addEventListener('input',update));
+  $('showB').addEventListener('change',update);
+  $('showGraph').addEventListener('change',update);
+  document.querySelectorAll('.preset').forEach(btn=>btn.addEventListener('click',()=>{
+    $('i1').value=btn.dataset.i1; $('i2').value=btn.dataset.i2; $('d').value=btn.dataset.d; update();
+  }));
+  $('reset').addEventListener('click',()=>{
+    $('i1').value=5; $('i2').value=5; $('d').value=.10; $('length').value=1;
+    $('showB').checked=true; $('showGraph').checked=true; logs=[]; renderLogs(); update();
+  });
+  $('record').addEventListener('click',()=>{logs.push(currentState());renderLogs();});
+  $('clear').addEventListener('click',()=>{logs=[];renderLogs();});
+  function renderLogs(){
+    $('logs').innerHTML=logs.length?logs.map((s,i)=>`<tr class="hover:bg-slate-50"><td class="p-3 font-bold">${i+1}</td><td class="p-3 mono">${signed(s.I1)}</td><td class="p-3 mono">${signed(s.I2)}</td><td class="p-3 mono">${fmt(s.d,2)}</td><td class="p-3 mono font-bold">${fmt(s.FL*1e6,2)}</td><td class="p-3">${s.type}</td></tr>`).join(''):'<tr><td colspan="6" class="p-5 text-center text-slate-400 italic">Belum ada data pengamatan.</td></tr>';
+  }
+  renderLogs(); update();
+})();
+</script>
+</body>
+</html>
